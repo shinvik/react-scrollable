@@ -21,6 +21,7 @@ const meta = {
     className: { table: { category: 'customization' } },
     style: { table: { category: 'customization' } },
     wrapperStyle: { table: { category: 'customization' } },
+    children: { table: { type: { summary: 'React.ReactNode | (state: ScrollableStateType | undefined) => React.ReactNode' } } },
     classNames: {
       table: {
         category: 'customization',

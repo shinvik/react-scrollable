@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react';
 import dts from 'unplugin-dts/vite';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
+import svgr from 'vite-plugin-svgr';
 import { resolve } from 'path';
 import removeTestIdAttribute from 'rollup-plugin-jsx-remove-attributes';
 
@@ -9,6 +10,7 @@ import removeTestIdAttribute from 'rollup-plugin-jsx-remove-attributes';
 export default defineConfig({
   plugins: [
     react(),
+    svgr(),
     libInjectCss(),
     dts({
       tsconfigPath: './tsconfig.app.json',

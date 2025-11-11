@@ -1,9 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useRef, useCallback } from 'react';
 import { fn } from 'storybook/test';
 import { css } from '@emotion/css';
 import Scrollable from './scrollable';
-import vDragUrl from './assets/v-drag.svg';
-import hDragUrl from './assets/h-drag.svg';
+import cx from './utils/classnames';
+import vDragUrl from './assets/v-drag.svg?url';
+import hDragUrl from './assets/h-drag.svg?url';
+import CircleUp from './assets/circle-up.svg?react';
+import CircleDown from './assets/circle-down.svg?react';
+import CircleLeft from './assets/circle-left.svg?react';
+import CircleRight from './assets/circle-right.svg?react';
 import { HorizontallyAndVerticallyScrollable } from './simple.stories';
 
 const meta = {
@@ -166,4 +172,142 @@ export const CustomScrollbarsVariant3: Story = {
       },
     }
   },
+}
+
+export const CustomScrollbarsVariant4: Story = {
+  ...DefaultScrollbars,
+  render: function Render({
+    children,
+    ...props
+  }) {
+    const scrollableRef = useRef<HTMLDivElement>(null)
+    const scrollTop = useCallback(() => {
+      if (scrollableRef.current) {
+        scrollableRef.current.scrollTop = 0;
+      }
+    }, []);
+    const scrollBottom = useCallback(() => {
+      if (scrollableRef.current) {
+        scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight - scrollableRef.current.offsetHeight;
+      }
+    }, []);
+    const scrollLeft = useCallback(() => {
+      if (scrollableRef.current) {
+        scrollableRef.current.scrollLeft = 0;
+      }
+    }, []);
+    const scrollRight = useCallback(() => {
+      if (scrollableRef.current) {
+        scrollableRef.current.scrollLeft = scrollableRef.current.scrollWidth - scrollableRef.current.offsetWidth;
+      }
+    }, []);
+
+    const isIntermediate = (value: boolean | undefined) => value === false;
+
+    const buttonCls = css({
+      border: 'none',
+      cursor: 'pointer',
+      background: '#FFFFFF',
+      padding: 0,
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+    });
+    const arrowCls = css({
+      width: 30,
+      height: 30,
+      fill: '#8CAFBF',
+    })
+    return (
+      <Scrollable
+        {...props}
+        styles={{
+          scrollable: {
+            position: 'relative',
+          }
+        }}
+        ref={scrollableRef}
+      >
+        {
+          (scrollableState) => (
+            <>
+              {children}
+              {
+                isIntermediate(scrollableState?.isTopEdgeReached) && (
+                  <button
+                    className={cx(
+                      buttonCls,
+                      css({
+                        position: 'absolute',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        top: 10,
+                      }),
+                    )}
+                    onClick={scrollTop}
+                  >
+                    <CircleUp className={arrowCls} />
+                  </button>
+                )
+              }
+              {
+                isIntermediate(scrollableState?.isBottomEdgeReached) && (
+                  <button
+                    className={cx(
+                      buttonCls,
+                      css({
+                        position: 'absolute',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        bottom: 10,
+                      }),
+                    )}
+                    onClick={scrollBottom}
+                  >
+                    <CircleDown className={arrowCls} />
+                  </button>
+                )
+              }
+              {
+                isIntermediate(scrollableState?.isLeftEdgeReached) && (
+                  <button
+                    className={cx(
+                      buttonCls,
+                      css({
+                        position: 'absolute',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        left: 10,
+                      }),
+                    )}
+                    onClick={scrollLeft}
+                  >
+                    <CircleLeft className={arrowCls} />
+                  </button>
+                )
+              }
+              {
+                isIntermediate(scrollableState?.isRightEdgeReached) && (
+                  <button
+                    className={cx(
+                      buttonCls,
+                      css({
+                        position: 'absolute',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        right: 10,
+                      }),
+                    )}
+                    onClick={scrollRight}
+                  >
+                    <CircleRight className={arrowCls} />
+                  </button>
+                )
+              }
+            </>
+          )
+        }
+      </Scrollable>
+    )
+  }
 }

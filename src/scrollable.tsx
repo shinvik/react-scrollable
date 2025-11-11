@@ -8,7 +8,7 @@ import {
   memo,
   useMemo,
   useRef,
-  useState,
+  useState, startTransition, type ReactNode,
 } from 'react';
 import CssVariables from './css-variables';
 import Scrollbar from './scrollbar';
@@ -16,21 +16,27 @@ import cx from './utils/classnames';
 import generateUniqId from './utils/generateUniqId';
 import composeRef from './utils/composeRef';
 import makeClassName from './utils/makeClassName';
+import makeStyle from './utils/makeStyle';
 import useHorizontalScrollbarHandlers from './hooks/useHorizontalScrollbarHandlers';
 import useVerticalScrollbarHandlers from './hooks/useVerticalScrollbarHandlers';
 import useResizeObserver from './hooks/useResizeObserver';
 import useScrollHandlers from './hooks/useScrollHandlers';
 import usePointerHandlers from './hooks/usePointerHandlers';
-import type { ClassNamesType } from './types';
+import useScrollableState from './hooks/useScrollableState';
+import useEvent from './hooks/useEvent';
+import type { ClassNamesType, StylesType, ScrollableStateType } from './types';
 import './scrollable.css';
 
 export type {
   ClassNamesType,
   ClassNameStringOrFnType,
   ClassNameStringOrFnReturnType,
+  StylesType,
+  StylesOrFnType,
+  ScrollableStateType,
 } from './types';
 
-export type ScrollablePropsType = HTMLAttributes<HTMLElement> & {
+export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> & {
   /**
    * show thumbs on mouse hover, effects only for pointing devices like a mouse
    */
@@ -52,6 +58,15 @@ export type ScrollablePropsType = HTMLAttributes<HTMLElement> & {
    * called when the scrollable area reaches its bottom edge
    */
   onBottomEdgeReached?: (event: UIEvent) => void;
+  /**
+   * called when component is mounted or its inner state is changed
+   * @param {Object} scrollableState - component inner state
+   * @param {boolean} scrollableState.isTopEdgeReached - Is the element scrolled to the top?
+   * @param {boolean} scrollableState.isBottomEdgeReached - Is the element scrolled to the bottom?
+   * @param {boolean} scrollableState.isLeftEdgeReached - Is the element scrolled to the left?
+   * @param {boolean} scrollableState.isRightEdgeReached - Is the element scrolled to the right?
+   */
+  onScrollableStateChange?: (scrollableState: ScrollableStateType | undefined) => void;
   /**
    * <a name="classname-props-anchor"></a>
    * The property serves as a prefix for generating new classes for internal elements, which are appended to the existing classes
@@ -81,6 +96,16 @@ export type ScrollablePropsType = HTMLAttributes<HTMLElement> & {
    */
   classNames?: Partial<ClassNamesType>;
   /**
+   * A set of styles for styling scrollable component. The values for the classes can be a string or a function that takes the appropriate argument and returns a string.
+   * @param {Object} styles - styles set
+   * @param {string|Array<string>} styles.scrollable - the wrapper element styles containing the scrollable area and scrollbars, implemented as a dynamic grid.
+   * @param {string|Array<string>} styles.area - scrollable element styles - uses CSS overflow property
+   * @param {string|Array<string>} styles.content - content element styles
+   * @param {string|Array<string>} styles.scrollbar - scrollbar element styles
+   * @param {string|Array<string>} styles.thumb - thumb element styles
+   */
+  styles?: Partial<StylesType>;
+  /**
    * Applies styles to the overflow-enabled scrollable element.
    * The width and height properties are applied exclusively to the inner content element, excluding scrollbars.
    * Use the `wrapperStyle` property to define the size of the container encompassing all elements.
@@ -90,6 +115,15 @@ export type ScrollablePropsType = HTMLAttributes<HTMLElement> & {
    * Applies styles to the wrapper containing all component elements and scrollbars
    */
   wrapperStyle?: CSSProperties;
+  /**
+   * Содержимое прокручиваемой области
+   * @param {Object} scrollableState - component inner state
+   * @param {boolean} scrollableState.isTopEdgeReached - Is the element scrolled to the top?
+   * @param {boolean} scrollableState.isBottomEdgeReached - Is the element scrolled to the bottom?
+   * @param {boolean} scrollableState.isLeftEdgeReached - Is the element scrolled to the left?
+   * @param {boolean} scrollableState.isRightEdgeReached - Is the element scrolled to the right?
+   */
+  children: ReactNode | ((scrollableState: ScrollableStateType | undefined) => ReactNode);
 }
 
 /**
@@ -128,11 +162,13 @@ function Scrollable({
   className = undefined,
   classNames = undefined,
   style = undefined,
+  styles = undefined,
   wrapperStyle = undefined,
   onLeftEdgeReached = undefined,
   onRightEdgeReached = undefined,
   onTopEdgeReached = undefined,
   onBottomEdgeReached = undefined,
+  onScrollableStateChange = undefined,
   ...props
 }: ScrollablePropsType, ref: Ref<HTMLDivElement>): ReactElement {
   const [visibility, setVisibility] = useState([false, false]);
@@ -143,6 +179,11 @@ function Scrollable({
   const scrollableRef = useRef<HTMLDivElement>(null);
 
   const scrollableId = useMemo(() => props.id ?? generateUniqId(), [props.id]);
+
+  const [scrollableState, setScrollableState] = useScrollableState({
+    scrollableRef,
+    onScrollableStateChange,
+  });
 
   useResizeObserver({
     scrollableRef,
@@ -158,10 +199,17 @@ function Scrollable({
 
   const ignoresScrollEvents = useRef(false);
 
+  const onScroll = useEvent((event: UIEvent<HTMLElement>) => {
+    startTransition(() => {
+      setScrollableState(event.currentTarget);
+    });
+    props.onScroll?.(event);
+  })
+
   const scrollHandlers = useScrollHandlers({
     hScrollbarRef,
     vScrollbarRef,
-    onScroll: props.onScroll,
+    onScroll,
     onLeftEdgeReached,
     onRightEdgeReached,
     onTopEdgeReached,
@@ -188,7 +236,6 @@ function Scrollable({
     ignoresScrollEvents,
   });
 
-
   return (
     <CssVariables>
       <div
@@ -203,10 +250,19 @@ function Scrollable({
             hasHorizontalScrollbar,
             hasVerticalScrollbar,
             showThumbOnHover,
+            ...scrollableState,
           }),
           className
         )}
-        style={wrapperStyle}
+        style={{
+          ...wrapperStyle,
+          ...makeStyle(styles?.scrollable, {
+            hasHorizontalScrollbar,
+            hasVerticalScrollbar,
+            showThumbOnHover,
+            ...scrollableState,
+          }),
+        }}
       >
         <div
           {...props}
@@ -214,18 +270,26 @@ function Scrollable({
           className={cx('scrollable__area', makeClassName(classNames?.area), {
             [`${className}__area`]: !!className,
           })}
-          style={style}
+          style={{
+            ...style,
+            ...makeStyle(styles?.area),
+          }}
           ref={composeRef(ref, scrollableRef)}
           data-testid="scrollable"
           {...scrollHandlers}
         >
           <div
-            className={cx('scrollable__content', makeClassName(classNames?.content), {
-              [`${className}__content`]: !!className,
-            })}
+            className={cx(
+              'scrollable__content',
+              makeClassName(classNames?.content),
+              {
+                [`${className}__content`]: !!className,
+              },
+            )}
+            style={makeStyle(styles?.content)}
             {...pointerHandlers}
           >
-            {children}
+            {typeof children === 'function' ? children(scrollableState) : children}
           </div>
         </div>
         <Scrollbar

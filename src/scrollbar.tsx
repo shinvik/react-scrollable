@@ -7,18 +7,21 @@ import {
 } from 'react';
 import cx from './utils/classnames';
 import makeClassName from './utils/makeClassName';
-import type { ClassNamesType } from './types';
+import makeStyle from './utils/makeStyle';
+import type { ClassNamesType, StylesType } from './types';
 import './scrollbar.css';
 
 type ScrollbarPropsType = HTMLAttributes<HTMLElement> & {
   isVertical?: boolean;
-  classNames?: Partial<Pick<ClassNamesType, 'scrollbar' | 'thumb'>>
+  classNames?: Partial<Pick<ClassNamesType, 'scrollbar' | 'thumb'>>;
+  styles?: Partial<Pick<StylesType, 'scrollbar' | 'thumb'>>;
 };
 
 function Scrollbar({
   isVertical = false,
   className,
   classNames,
+  styles,
   ...props
 }: ScrollbarPropsType, ref: Ref<HTMLDivElement>): ReactElement {
   const ariaLabel = isVertical
@@ -30,15 +33,17 @@ function Scrollbar({
     : 'horizontal';
 
   return (
-    <div className={cx(
-      'scrollable__scrollbar',
-      {
-        'scrollable__scrollbar_horizontal': !isVertical,
-        'scrollable__scrollbar_vertical': isVertical,
-        [`${className}__scrollbar`]: !!className,
-      },
-      makeClassName(classNames?.scrollbar, { isVertical }),
-    )}
+    <div
+      className={cx(
+        'scrollable__scrollbar',
+        {
+          'scrollable__scrollbar_horizontal': !isVertical,
+          'scrollable__scrollbar_vertical': isVertical,
+          [`${className}__scrollbar`]: !!className,
+        },
+        makeClassName(classNames?.scrollbar, { isVertical }),
+      )}
+      style={makeStyle(styles?.scrollbar, { isVertical })}
     >
       <div className={cx('scrollable__scrollbar__track', {
         [`${className}__scrollbar__track`]: !!className,
@@ -55,6 +60,7 @@ function Scrollbar({
             },
             makeClassName(classNames?.thumb, { isVertical }),
           )}
+          style={makeStyle(styles?.thumb, { isVertical })}
           role="scrollbar"
           aria-orientation={ariaOrientation}
           aria-label={ariaLabel}
