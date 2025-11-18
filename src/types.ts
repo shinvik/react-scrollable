@@ -24,10 +24,6 @@ export type ClassNamesType = {
    */
   area: ClassNameStringOrFnType;
   /**
-   * content element class
-   */
-  content: ClassNameStringOrFnType;
-  /**
    * scrollbar element class
    */
   scrollbar: ClassNameStringOrFnType<{
@@ -62,10 +58,6 @@ export type StylesType = {
    * scrollable element styles - uses CSS overflow property
    */
   area: StylesOrFnType;
-  /**
-   * content element styles
-   */
-  content: StylesOrFnType;
   /**
    * scrollbar element styles
    */

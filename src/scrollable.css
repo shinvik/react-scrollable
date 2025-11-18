@@ -13,12 +13,6 @@
     }
   }
 
-  &__content {
-    display: inline-block;
-    touch-action: none;
-    min-width: 100%;
-  }
-
   .scrollable__scrollbar_horizontal {
     visibility: hidden;
   }

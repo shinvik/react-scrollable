@@ -75,7 +75,6 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    *
    * * `[className]` - the wrapper element class containing the scrollable area and scrollbars, implemented as a dynamic grid.
    * * `[className]__area` - scrollable element class - uses CSS overflow property
-   * * `[className]__content` - content element class
    * * `[className]__scrollbar` - scrollbar element class
    * * `[className]__scrollbar_vertical` - vertical scrollbar modifier class
    * * `[className]__scrollbar_horizontal` - horizontal scrollbar modifier class
@@ -90,7 +89,6 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    *
    * * `scrollable` - the wrapper element class containing the scrollable area and scrollbars, implemented as a dynamic grid.
    * * `area` - scrollable element class - uses CSS overflow property
-   * * `content` - content element class
    * * `scrollbar` - scrollbar element class
    * * `thumb` - thumb element class
    */
@@ -100,7 +98,6 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    * @param {Object} styles - styles set
    * @param {string|Array<string>} styles.scrollable - the wrapper element styles containing the scrollable area and scrollbars, implemented as a dynamic grid.
    * @param {string|Array<string>} styles.area - scrollable element styles - uses CSS overflow property
-   * @param {string|Array<string>} styles.content - content element styles
    * @param {string|Array<string>} styles.scrollbar - scrollbar element styles
    * @param {string|Array<string>} styles.thumb - thumb element styles
    */
@@ -149,7 +146,6 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
  * 2. using component's internal classes to support more complex styling
  *  - `scrollable` - the wrapper element class containing the scrollable area and scrollbars, implemented as a dynamic grid.
  *  - `scrollable__area` - scrollable element class - uses CSS overflow property
- *  - `scrollable__content` - content element class
  *  - `scrollable__scrollbar` - scrollbar element class
  *  - `scrollable__scrollbar_vertical` - vertical scrollbar modifier class
  *  - `scrollable__scrollbar_horizontal` - horizontal scrollbar modifier class
@@ -218,7 +214,6 @@ function Scrollable({
   });
 
   const pointerHandlers = usePointerHandlers({
-    scrollableRef,
     hScrollbarRef,
     vScrollbarRef,
     ignoresScrollEvents,
@@ -277,20 +272,9 @@ function Scrollable({
           ref={composeRef(ref, scrollableRef)}
           data-testid="scrollable"
           {...scrollHandlers}
+          {...pointerHandlers}
         >
-          <div
-            className={cx(
-              'scrollable__content',
-              makeClassName(classNames?.content),
-              {
-                [`${className}__content`]: !!className,
-              },
-            )}
-            style={makeStyle(styles?.content)}
-            {...pointerHandlers}
-          >
-            {typeof children === 'function' ? children(scrollableState) : children}
-          </div>
+          {typeof children === 'function' ? children(scrollableState) : children}
         </div>
         <Scrollbar
           ref={vScrollbarRef}

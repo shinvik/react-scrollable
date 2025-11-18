@@ -5,14 +5,12 @@ import { isMore, isNumber } from '../utils/math';
 import setScrollbarOffset from '../utils/setScrollbarOffset';
 
 type UseContentPointerHandlersPropsType = {
-  scrollableRef: RefObject<HTMLElement | null>;
   hScrollbarRef: RefObject<HTMLElement | null>;
   vScrollbarRef: RefObject<HTMLElement | null>;
   ignoresScrollEvents: RefObject<boolean>;
 }
 
 const usePointerHandlers = ({
-  scrollableRef,
   vScrollbarRef,
   hScrollbarRef,
   ignoresScrollEvents,
@@ -29,16 +27,15 @@ const usePointerHandlers = ({
   });
   const onPointerMove = useEvent((event: PointerEvent) => {
     if (event.pointerType === 'touch' && event.isPrimary) {
-      const scrollableElement = scrollableRef.current!;
-      const targetRect = event.currentTarget.getBoundingClientRect();
-      const scrollableRect = scrollableElement.getBoundingClientRect();
+      const scrollableElement = event.currentTarget;
+      const scrollableRect = event.currentTarget.getBoundingClientRect();
       let nextScrollTop: number | undefined;
       let nextScrollLeft: number | undefined;
 
-      if (isMore(targetRect.height, scrollableRect.height)) {
+      if (isMore(scrollableElement.scrollHeight, scrollableRect.height)) {
         const scrollTop = Math.min(
           Math.max(scrollableElement.scrollTop - (event.clientY - clientYRef.current), 0),
-          targetRect.height - scrollableRect.height,
+          scrollableElement.scrollHeight - scrollableRect.height,
         );
         const scrollbarElement = vScrollbarRef.current;
         if (scrollbarElement && scrollableElement.scrollTop !== scrollTop) {
@@ -49,10 +46,10 @@ const usePointerHandlers = ({
         }
       }
 
-      if (isMore(targetRect.width, scrollableRect.width)) {
+      if (isMore(scrollableElement.scrollWidth, scrollableRect.width)) {
         const scrollLeft = Math.min(
           Math.max(scrollableElement.scrollLeft - (event.clientX - clientXRef.current), 0),
-          targetRect.width - scrollableRect.width,
+          scrollableElement.scrollWidth - scrollableRect.width,
         );
         const scrollbarElement = hScrollbarRef.current;
         if (scrollbarElement && scrollableElement.scrollLeft !== scrollLeft) {

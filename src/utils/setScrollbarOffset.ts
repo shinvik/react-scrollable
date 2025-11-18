@@ -3,7 +3,7 @@ import makePx from './makePx';
 import setAttributes from './setAttributes';
 
 type OptionsType = {
-  scrollableElement: HTMLElement;
+  scrollableElement: Element;
   value: number;
   isVertical: boolean;
 }
