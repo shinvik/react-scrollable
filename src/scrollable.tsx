@@ -24,7 +24,12 @@ import useScrollHandlers from './hooks/useScrollHandlers';
 import usePointerHandlers from './hooks/usePointerHandlers';
 import useScrollableState from './hooks/useScrollableState';
 import useEvent from './hooks/useEvent';
-import type { ClassNamesType, StylesType, ScrollableStateType } from './types';
+import type {
+  ClassNamesType,
+  StylesType,
+  ScrollableStateType,
+  ScrollablePayloadType,
+} from './types';
 import './scrollable.css';
 
 export type {
@@ -34,6 +39,7 @@ export type {
   StylesType,
   StylesOrFnType,
   ScrollableStateType,
+  ScrollablePayloadType,
 } from './types';
 
 export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> & {
@@ -120,7 +126,7 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    * @param {boolean} scrollableState.isLeftEdgeReached - Is the element scrolled to the left?
    * @param {boolean} scrollableState.isRightEdgeReached - Is the element scrolled to the right?
    */
-  children: ReactNode | ((scrollableState: ScrollableStateType | undefined) => ReactNode);
+  children: ReactNode | ((scrollableState: ScrollablePayloadType | undefined) => ReactNode);
 }
 
 /**
@@ -231,6 +237,13 @@ function Scrollable({
     ignoresScrollEvents,
   });
 
+  const scrollablePayload = {
+    hasHorizontalScrollbar,
+    hasVerticalScrollbar,
+    showThumbOnHover,
+    ...scrollableState,
+  }
+
   return (
     <CssVariables>
       <div
@@ -241,40 +254,34 @@ function Scrollable({
             'scrollable_has-vertical-scrollbar': hasVerticalScrollbar,
             'scrollable_show-mouse-on-hover': showThumbOnHover,
           },
-          makeClassName(classNames?.scrollable, {
-            hasHorizontalScrollbar,
-            hasVerticalScrollbar,
-            showThumbOnHover,
-            ...scrollableState,
-          }),
+          makeClassName(classNames?.scrollable, scrollablePayload),
           className
         )}
         style={{
           ...wrapperStyle,
-          ...makeStyle(styles?.scrollable, {
-            hasHorizontalScrollbar,
-            hasVerticalScrollbar,
-            showThumbOnHover,
-            ...scrollableState,
-          }),
+          ...makeStyle(styles?.scrollable, scrollablePayload),
         }}
       >
         <div
           {...props}
           id={scrollableId}
-          className={cx('scrollable__area', makeClassName(classNames?.area), {
-            [`${className}__area`]: !!className,
-          })}
+          className={cx(
+            'scrollable__area',
+            makeClassName(classNames?.area, scrollablePayload),
+            {
+              [`${className}__area`]: !!className,
+            })
+          }
           style={{
             ...style,
-            ...makeStyle(styles?.area),
+            ...makeStyle(styles?.area, scrollablePayload),
           }}
           ref={composeRef(ref, scrollableRef)}
           data-testid="scrollable"
           {...scrollHandlers}
           {...pointerHandlers}
         >
-          {typeof children === 'function' ? children(scrollableState) : children}
+          {typeof children === 'function' ? children(scrollablePayload) : children}
         </div>
         <Scrollbar
           ref={vScrollbarRef}

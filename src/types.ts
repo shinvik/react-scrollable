@@ -10,19 +10,30 @@ export type ClassNameStringOrFnType<Payload = undefined> =
     : (payload: Payload) => ClassNameStringOrFnReturnType
   );
 
+export type ScrollablePayloadType = Partial<ScrollableStateType> & {
+  /**
+   * horizontal scrollbar presence flag
+   */
+  hasHorizontalScrollbar: boolean;
+  /**
+   * vertical scrollbar presence flag
+   */
+  hasVerticalScrollbar: boolean;
+  /**
+   * show scrollbar on hover
+   */
+  showThumbOnHover: boolean;
+}
+
 export type ClassNamesType = {
   /**
    * the wrapper element class containing the scrollable area and scrollbars, implemented as a dynamic grid.
    */
-  scrollable: ClassNameStringOrFnType<Partial<ScrollableStateType> & {
-    hasHorizontalScrollbar: boolean;
-    hasVerticalScrollbar: boolean;
-    showThumbOnHover: boolean;
-  }>;
+  scrollable: ClassNameStringOrFnType<ScrollablePayloadType>;
   /**
    * scrollable element class - uses CSS overflow property
    */
-  area: ClassNameStringOrFnType;
+  area: ClassNameStringOrFnType<ScrollablePayloadType>;
   /**
    * scrollbar element class
    */
@@ -49,15 +60,11 @@ export type StylesType = {
   /**
    * the wrapper element styles containing the scrollable area and scrollbars, implemented as a dynamic grid.
    */
-  scrollable: StylesOrFnType<Partial<ScrollableStateType> & {
-    hasHorizontalScrollbar: boolean;
-    hasVerticalScrollbar: boolean;
-    showThumbOnHover: boolean;
-  }>;
+  scrollable: StylesOrFnType<ScrollablePayloadType>;
   /**
    * scrollable element styles - uses CSS overflow property
    */
-  area: StylesOrFnType;
+  area: StylesOrFnType<ScrollablePayloadType>;
   /**
    * scrollbar element styles
    */
