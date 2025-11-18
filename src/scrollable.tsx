@@ -90,13 +90,11 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
   /**
    * <a name="classnames-props-anchor"></a>
    * A set of classes for styling the scrollbar area. The values for the classes can be a string or a function that takes the appropriate argument and returns a string.
-   *
-   * Supported classes:
-   *
-   * * `scrollable` - the wrapper element class containing the scrollable area and scrollbars, implemented as a dynamic grid.
-   * * `area` - scrollable element class - uses CSS overflow property
-   * * `scrollbar` - scrollbar element class
-   * * `thumb` - thumb element class
+   * @param {Object} classNames - classnames set
+   * @param {string|Array<string>} classNames.scrollable - the wrapper element classname containing the scrollable area and scrollbars, implemented as a dynamic grid.
+   * @param {string|Array<string>} classNames.area - scrollable element classname - uses CSS overflow property
+   * @param {string|Array<string>} classNames.scrollbar - scrollbar element classname
+   * @param {string|Array<string>} classNames.thumb - thumb element classname
    */
   classNames?: Partial<ClassNamesType>;
   /**
@@ -120,13 +118,16 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
   wrapperStyle?: CSSProperties;
   /**
    * Содержимое прокручиваемой области
-   * @param {Object} scrollableState - component inner state
-   * @param {boolean} scrollableState.isTopEdgeReached - Is the element scrolled to the top?
-   * @param {boolean} scrollableState.isBottomEdgeReached - Is the element scrolled to the bottom?
-   * @param {boolean} scrollableState.isLeftEdgeReached - Is the element scrolled to the left?
-   * @param {boolean} scrollableState.isRightEdgeReached - Is the element scrolled to the right?
+   * @param {Object} payload - scrollable payload
+   * @param {boolean} payload.isTopEdgeReached Is the element scrolled to the top?
+   * @param {boolean} payload.isBottomEdgeReached Is the element scrolled to the bottom?
+   * @param {boolean} payload.isLeftEdgeReached Is the element scrolled to the left?
+   * @param {boolean} payload.isRightEdgeReached Is the element scrolled to the right?
+   * @param {boolean} payload.hasHorizontalScrollbar Is there a horizontal scrollbar?
+   * @param {boolean} payload.hasVerticalScrollbar Is there a vertical scrollbar?
+   * @param {boolean} payload.showThumbOnHover show scrollbar on hover?
    */
-  children: ReactNode | ((scrollableState: ScrollablePayloadType | undefined) => ReactNode);
+  children: ReactNode | ((payload: ScrollablePayloadType | undefined) => ReactNode);
 }
 
 /**

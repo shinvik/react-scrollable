@@ -21,45 +21,18 @@ const meta = {
     className: { table: { category: 'customization' } },
     style: { table: { category: 'customization' } },
     wrapperStyle: { table: { category: 'customization' } },
-    children: { table: { type: { summary: 'React.ReactNode | (state: ScrollableStateType | undefined) => React.ReactNode' } } },
+    children: {
+      table: {
+        type: {
+          summary: 'React.ReactNode | (payload: ScrollablePayloadType | undefined) => React.ReactNode'
+        },
+      }
+    },
+    styles: { table: { category: 'customization' } },
     classNames: {
       table: {
         category: 'customization',
-        type: {
-          summary: 'Partial<ClassNamesType>',
-          detail: `
-type ClassNameStringOrFnType<Payload = undefined> =
-  string
-  | (Payload extends undefined ? () => string : (payload: Payload) => string);
-
-type ClassNamesType = {
-  /**
-   * the wrapper element class containing the scrollable area and scrollbars, implemented as a dynamic grid.
-   */
-  scrollable: ClassNameStringOrFnType;
-  /**
-   * scrollable element class - uses CSS overflow property
-   */
-  area: ClassNameStringOrFnType;
-  /**
-   * content element class
-   */
-  content: ClassNameStringOrFnType;
-  /**
-   * scrollbar element class
-   */
-  scrollbar: ClassNameStringOrFnType<{
-    isVertical: boolean;
-  }>;
-  /**
-   * thumb element class
-   */
-  thumb: ClassNameStringOrFnType<{
-    isVertical: boolean;
-  }>;
-}
-          `,
-        },
+        type: { summary: 'Partial<ClassNamesType>' },
       },
     },
   },
