@@ -109,13 +109,8 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
   /**
    * Applies styles to the overflow-enabled scrollable element.
    * The width and height properties are applied exclusively to the inner content element, excluding scrollbars.
-   * Use the `wrapperStyle` property to define the size of the container encompassing all elements.
    */
   style?: CSSProperties;
-  /**
-   * Applies styles to the wrapper containing all component elements and scrollbars
-   */
-  wrapperStyle?: CSSProperties;
   /**
    * Содержимое прокручиваемой области
    * @param {Object} payload - scrollable payload
@@ -166,7 +161,6 @@ function Scrollable({
   classNames = undefined,
   style = undefined,
   styles = undefined,
-  wrapperStyle = undefined,
   onLeftEdgeReached = undefined,
   onRightEdgeReached = undefined,
   onTopEdgeReached = undefined,
@@ -258,10 +252,7 @@ function Scrollable({
           makeClassName(classNames?.scrollable, scrollablePayload),
           className
         )}
-        style={{
-          ...wrapperStyle,
-          ...makeStyle(styles?.scrollable, scrollablePayload),
-        }}
+        style={makeStyle(styles?.scrollable, scrollablePayload)}
       >
         <div
           {...props}

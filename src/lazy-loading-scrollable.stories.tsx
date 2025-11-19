@@ -67,9 +67,11 @@ const horizontalScrollingItem = css`
 
 export const LazyHorizontalScrollable: Story = {
   args: {
-    wrapperStyle: {
-      width: 1000,
-      margin: '0 auto',
+    styles: {
+      scrollable: {
+        width: 1000,
+        margin: '0 auto',
+      },
     },
     onLeftEdgeReached: fn(),
     onRightEdgeReached: fn(),
@@ -176,9 +178,11 @@ export const LazyHorizontalScrollable: Story = {
 export const LazyVerticalScrollable: Story = {
   args: {
     ...LazyHorizontalScrollable.args,
-    wrapperStyle: {
-      width: 300,
-      height: 300,
+    styles: {
+      scrollable: {
+        width: 300,
+        height: 300,
+      },
     },
     onTopEdgeReached: fn(),
     onBottomEdgeReached: fn(),

@@ -34,7 +34,6 @@ const meta = {
         'children',
         'className',
         'style',
-        'wrapperStyle',
       ],
     },
   },

@@ -20,7 +20,6 @@ const meta = {
     },
     className: { table: { category: 'customization' } },
     style: { table: { category: 'customization' } },
-    wrapperStyle: { table: { category: 'customization' } },
     children: {
       table: {
         type: {
@@ -134,9 +133,11 @@ export const HorizontallyAndVerticallyScrollable: Story = {
         aliquid assumenda beatae earum eos error, eveniet illum laborum maxime nam neque optio placeat quasi quis
         ratione recusandae tempore veritatis.</div>
     ),
-    wrapperStyle: {
-      width: 300,
-      height: 300,
+    styles: {
+      scrollable: {
+        width: 300,
+        height: 300,
+      }
     },
   },
   async play({
