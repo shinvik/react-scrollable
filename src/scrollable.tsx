@@ -74,19 +74,13 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    */
   onScrollableStateChange?: (scrollableState: ScrollableStateType | undefined) => void;
   /**
-   * <a name="classname-props-anchor"></a>
-   * The property serves as a prefix for generating new classes for internal elements, which are appended to the existing classes
-   *
-   * Generated classes:
-   *
-   * * `[className]` - the wrapper element class containing the scrollable area and scrollbars, implemented as a dynamic grid.
-   * * `[className]__content` - scrollable element class - uses CSS overflow property
-   * * `[className]__scrollbar` - scrollbar element class
-   * * `[className]__scrollbar_vertical` - vertical scrollbar modifier class
-   * * `[className]__scrollbar_horizontal` - horizontal scrollbar modifier class
-   * * `[className]__scrollbar__thumb` - thumb element class
+   * used to add class name to the HTML element with `overflow: auto`
    */
   className?: string;
+  /**
+   * used to add style to the HTML element with `overflow: auto`
+   */
+  style?: CSSProperties;
   /**
    * <a name="classnames-props-anchor"></a>
    * A set of classes for styling the scrollbar area. The values for the classes can be a string or a function that takes the appropriate argument and returns a string.
@@ -106,11 +100,6 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    * @param {string|Array<string>} styles.thumb - thumb element styles
    */
   styles?: Partial<StylesType>;
-  /**
-   * Applies styles to the overflow-enabled scrollable element.
-   * The width and height properties are applied exclusively to the inner content element, excluding scrollbars.
-   */
-  style?: CSSProperties;
   /**
    * Содержимое прокручиваемой области
    * @param {Object} payload - scrollable payload
@@ -152,7 +141,6 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
  *  - `scrollable__scrollbar_vertical` - vertical scrollbar modifier class
  *  - `scrollable__scrollbar_horizontal` - horizontal scrollbar modifier class
  *  - `scrollable__scrollbar__thumb` - thumb element class
- * 3. using the [className property](#classname-props-anchor) to generate new classes for internal elements.
  */
 function Scrollable({
   children,
@@ -250,7 +238,6 @@ function Scrollable({
             'scrollable_show-mouse-on-hover': showThumbOnHover,
           },
           makeClassName(classNames?.scrollable, scrollablePayload),
-          className
         )}
         style={makeStyle(styles?.scrollable, scrollablePayload)}
       >
@@ -260,10 +247,8 @@ function Scrollable({
           className={cx(
             'scrollable__content',
             makeClassName(classNames?.content, scrollablePayload),
-            {
-              [`${className}__content`]: !!className,
-            })
-          }
+            className,
+          )}
           style={{
             ...style,
             ...makeStyle(styles?.content, scrollablePayload),
@@ -279,14 +264,12 @@ function Scrollable({
           ref={vScrollbarRef}
           isVertical
           aria-controls={scrollableId}
-          className={className}
           classNames={classNames}
           {...verticalScrollbarHandlers}
         />
         <Scrollbar
           ref={hScrollbarRef}
           aria-controls={scrollableId}
-          className={className}
           classNames={classNames}
           {...horizontalScrollbarHandlers}
         />

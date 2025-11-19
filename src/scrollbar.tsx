@@ -19,7 +19,6 @@ type ScrollbarPropsType = HTMLAttributes<HTMLElement> & {
 
 function Scrollbar({
   isVertical = false,
-  className,
   classNames,
   styles,
   ...props
@@ -39,15 +38,12 @@ function Scrollbar({
         {
           'scrollable__scrollbar_horizontal': !isVertical,
           'scrollable__scrollbar_vertical': isVertical,
-          [`${className}__scrollbar`]: !!className,
         },
         makeClassName(classNames?.scrollbar, { isVertical }),
       )}
       style={makeStyle(styles?.scrollbar, { isVertical })}
     >
-      <div className={cx('scrollable__scrollbar__track', {
-        [`${className}__scrollbar__track`]: !!className,
-      })}>
+      <div className={cx('scrollable__scrollbar__track')}>
         <div
           {...props}
           ref={ref}
@@ -56,7 +52,6 @@ function Scrollbar({
             {
               'scrollable__scrollbar__thumb_horizontal': !isVertical,
               'scrollable__scrollbar__thumb_vertical': isVertical,
-              [`${className}__scrollbar__thumb`]: !!className,
             },
             makeClassName(classNames?.thumb, { isVertical }),
           )}
