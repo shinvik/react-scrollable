@@ -1,10 +1,6 @@
 name: Update README.md
 
-on:
-  push:
-    paths:
-      - "src/**"
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
   update_chromatic_permalink_in_readme:
