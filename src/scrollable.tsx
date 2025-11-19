@@ -86,16 +86,17 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    * A set of classes for styling the scrollbar area. The values for the classes can be a string or a function that takes the appropriate argument and returns a string.
    * @param {Object} classNames - classnames set
    * @param {string|Array<string>} classNames.scrollable - the wrapper element classname containing the scrollable area and scrollbars, implemented as a dynamic grid.
-   * @param {string|Array<string>} classNames.content - scrollable element classname - uses CSS overflow property
+   * @param {string|Array<string>} classNames.content - scrollable element classname with overflow: auto
    * @param {string|Array<string>} classNames.scrollbar - scrollbar element classname
    * @param {string|Array<string>} classNames.thumb - thumb element classname
    */
   classNames?: Partial<ClassNamesType>;
   /**
+   * <a name="styles-props-anchor"></a>
    * A set of styles for styling scrollable component. The values for the classes can be a string or a function that takes the appropriate argument and returns a string.
    * @param {Object} styles - styles set
    * @param {string|Array<string>} styles.scrollable - the wrapper element styles containing the scrollable area and scrollbars, implemented as a dynamic grid.
-   * @param {string|Array<string>} styles.content - scrollable element styles - uses CSS overflow property
+   * @param {string|Array<string>} styles.content - scrollable element styles with overflow: auto
    * @param {string|Array<string>} styles.scrollbar - scrollbar element styles
    * @param {string|Array<string>} styles.thumb - thumb element styles
    */
@@ -134,9 +135,14 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
  *      - `--scrollbar-background: none;`
  *      - `--scrollbar-border: none;`
  *      - `--scrollbar-border-radius: 0;`
- * 2. using component's internal classes to support more complex styling
+ *
+ * 2. using [classNames api](#classnames-props-anchor) to support more complex styling
+ *
+ * 3. using [styles api](#styles-props-anchor) to support more complex styling
+ *
+ * 4. using component's internal classes to support more complex styling
  *  - `scrollable` - the wrapper element class containing the scrollable area and scrollbars, implemented as a dynamic grid.
- *  - `scrollable__area` - scrollable element class - uses CSS overflow property
+ *  - `scrollable__content` - scrollable element class - uses CSS overflow property
  *  - `scrollable__scrollbar` - scrollbar element class
  *  - `scrollable__scrollbar_vertical` - vertical scrollbar modifier class
  *  - `scrollable__scrollbar_horizontal` - horizontal scrollbar modifier class
