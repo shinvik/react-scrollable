@@ -31,7 +31,12 @@ export type ClassNamesType = {
    */
   scrollable: ClassNameStringOrFnType<ScrollablePayloadType>;
   /**
-   * scrollable element class - uses CSS overflow property
+   * className for the container element that wraps the element with `overflow: auto`;
+   * the element is designed to position child elements relative to the content area, excluding the scrollbars.
+   */
+  contentWrapper: ClassNameStringOrFnType<ScrollablePayloadType>;
+  /**
+   * className for element with `overflow: auto`
    */
   content: ClassNameStringOrFnType<ScrollablePayloadType>;
   /**
@@ -62,7 +67,12 @@ export type StylesType = {
    */
   scrollable: StylesOrFnType<ScrollablePayloadType>;
   /**
-   * scrollable element styles - uses CSS overflow property
+   * styles for the container element that wraps the element with `overflow: auto`;
+   * the element is designed to position child elements relative to the content area, excluding the scrollbars.
+   */
+  contentWrapper: StylesOrFnType<ScrollablePayloadType>;
+  /**
+   * styles for element with `overflow: auto`
    */
   content: StylesOrFnType<ScrollablePayloadType>;
   /**

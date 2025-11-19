@@ -221,9 +221,9 @@ export const CustomScrollbarsVariant4: Story = {
       <Scrollable
         {...props}
         styles={{
-          scrollable: {
+          contentWrapper: {
             position: 'relative',
-          }
+          },
         }}
         ref={scrollableRef}
       >

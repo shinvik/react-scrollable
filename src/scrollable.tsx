@@ -85,20 +85,22 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    * <a name="classnames-props-anchor"></a>
    * A set of classes for styling the scrollbar area. The values for the classes can be a string or a function that takes the appropriate argument and returns a string.
    * @param {Object} classNames - classnames set
-   * @param {string|Array<string>} classNames.scrollable - the wrapper element classname containing the scrollable area and scrollbars, implemented as a dynamic grid.
-   * @param {string|Array<string>} classNames.content - scrollable element classname with overflow: auto
-   * @param {string|Array<string>} classNames.scrollbar - scrollbar element classname
-   * @param {string|Array<string>} classNames.thumb - thumb element classname
+   * @param {string|Array<string>} classNames.scrollable the wrapper element classname containing the scrollable area and scrollbars, implemented as a dynamic grid.
+   * @param {string|Array<string>} classNames.contentWrapper className for the container element that wraps the element with `overflow: auto`
+   * @param {string|Array<string>} classNames.content className for element with `overflow: auto`
+   * @param {string|Array<string>} classNames.scrollbar scrollbar element classname
+   * @param {string|Array<string>} classNames.thumb thumb element classname
    */
   classNames?: Partial<ClassNamesType>;
   /**
    * <a name="styles-props-anchor"></a>
    * A set of styles for styling scrollable component. The values for the classes can be a string or a function that takes the appropriate argument and returns a string.
    * @param {Object} styles - styles set
-   * @param {string|Array<string>} styles.scrollable - the wrapper element styles containing the scrollable area and scrollbars, implemented as a dynamic grid.
-   * @param {string|Array<string>} styles.content - scrollable element styles with overflow: auto
-   * @param {string|Array<string>} styles.scrollbar - scrollbar element styles
-   * @param {string|Array<string>} styles.thumb - thumb element styles
+   * @param {string|Array<string>} styles.scrollable the wrapper element styles containing the scrollable area and scrollbars, implemented as a dynamic grid.
+   * @param {string|Array<string>} styles.contentWrapper styles for the container element that wraps the element with `overflow: auto`
+   * @param {string|Array<string>} styles.content styles for element with `overflow: auto`
+   * @param {string|Array<string>} styles.scrollbar scrollbar element styles
+   * @param {string|Array<string>} styles.thumb thumb element styles
    */
   styles?: Partial<StylesType>;
   /**
@@ -248,23 +250,31 @@ function Scrollable({
         style={makeStyle(styles?.scrollable, scrollablePayload)}
       >
         <div
-          {...props}
-          id={scrollableId}
           className={cx(
-            'scrollable__content',
-            makeClassName(classNames?.content, scrollablePayload),
-            className,
+            'scrollable__content-wrapper',
+            makeClassName(classNames?.contentWrapper, scrollablePayload),
           )}
-          style={{
-            ...style,
-            ...makeStyle(styles?.content, scrollablePayload),
-          }}
-          ref={composeRef(ref, scrollableRef)}
-          data-testid="scrollable"
-          {...scrollHandlers}
-          {...pointerHandlers}
+          style={makeStyle(styles?.contentWrapper, scrollablePayload)}
         >
-          {typeof children === 'function' ? children(scrollablePayload) : children}
+          <div
+            {...props}
+            id={scrollableId}
+            className={cx(
+              'scrollable__content',
+              makeClassName(classNames?.content, scrollablePayload),
+              className,
+            )}
+            style={{
+              ...style,
+              ...makeStyle(styles?.content, scrollablePayload),
+            }}
+            ref={composeRef(ref, scrollableRef)}
+            data-testid="scrollable"
+            {...scrollHandlers}
+            {...pointerHandlers}
+          >
+            {typeof children === 'function' ? children(scrollablePayload) : children}
+          </div>
         </div>
         <Scrollbar
           ref={vScrollbarRef}
