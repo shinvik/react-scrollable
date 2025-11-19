@@ -80,7 +80,7 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    * Generated classes:
    *
    * * `[className]` - the wrapper element class containing the scrollable area and scrollbars, implemented as a dynamic grid.
-   * * `[className]__area` - scrollable element class - uses CSS overflow property
+   * * `[className]__content` - scrollable element class - uses CSS overflow property
    * * `[className]__scrollbar` - scrollbar element class
    * * `[className]__scrollbar_vertical` - vertical scrollbar modifier class
    * * `[className]__scrollbar_horizontal` - horizontal scrollbar modifier class
@@ -92,7 +92,7 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    * A set of classes for styling the scrollbar area. The values for the classes can be a string or a function that takes the appropriate argument and returns a string.
    * @param {Object} classNames - classnames set
    * @param {string|Array<string>} classNames.scrollable - the wrapper element classname containing the scrollable area and scrollbars, implemented as a dynamic grid.
-   * @param {string|Array<string>} classNames.area - scrollable element classname - uses CSS overflow property
+   * @param {string|Array<string>} classNames.content - scrollable element classname - uses CSS overflow property
    * @param {string|Array<string>} classNames.scrollbar - scrollbar element classname
    * @param {string|Array<string>} classNames.thumb - thumb element classname
    */
@@ -101,7 +101,7 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    * A set of styles for styling scrollable component. The values for the classes can be a string or a function that takes the appropriate argument and returns a string.
    * @param {Object} styles - styles set
    * @param {string|Array<string>} styles.scrollable - the wrapper element styles containing the scrollable area and scrollbars, implemented as a dynamic grid.
-   * @param {string|Array<string>} styles.area - scrollable element styles - uses CSS overflow property
+   * @param {string|Array<string>} styles.content - scrollable element styles - uses CSS overflow property
    * @param {string|Array<string>} styles.scrollbar - scrollbar element styles
    * @param {string|Array<string>} styles.thumb - thumb element styles
    */
@@ -267,15 +267,15 @@ function Scrollable({
           {...props}
           id={scrollableId}
           className={cx(
-            'scrollable__area',
-            makeClassName(classNames?.area, scrollablePayload),
+            'scrollable__content',
+            makeClassName(classNames?.content, scrollablePayload),
             {
-              [`${className}__area`]: !!className,
+              [`${className}__content`]: !!className,
             })
           }
           style={{
             ...style,
-            ...makeStyle(styles?.area, scrollablePayload),
+            ...makeStyle(styles?.content, scrollablePayload),
           }}
           ref={composeRef(ref, scrollableRef)}
           data-testid="scrollable"

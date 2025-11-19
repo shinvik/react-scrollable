@@ -33,7 +33,7 @@ export type ClassNamesType = {
   /**
    * scrollable element class - uses CSS overflow property
    */
-  area: ClassNameStringOrFnType<ScrollablePayloadType>;
+  content: ClassNameStringOrFnType<ScrollablePayloadType>;
   /**
    * scrollbar element class
    */
@@ -64,7 +64,7 @@ export type StylesType = {
   /**
    * scrollable element styles - uses CSS overflow property
    */
-  area: StylesOrFnType<ScrollablePayloadType>;
+  content: StylesOrFnType<ScrollablePayloadType>;
   /**
    * scrollbar element styles
    */
