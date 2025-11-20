@@ -3,13 +3,13 @@ import { useRef, useCallback } from 'react';
 import { fn } from 'storybook/test';
 import { css } from '@emotion/css';
 import Scrollable from '@/scrollable';
-import cx from '@/utils/classnames';
 import vDragUrl from './assets/v-drag.svg?url';
 import hDragUrl from './assets/h-drag.svg?url';
 import CircleUp from './assets/circle-up.svg?react';
 import CircleDown from './assets/circle-down.svg?react';
 import CircleLeft from './assets/circle-left.svg?react';
 import CircleRight from './assets/circle-right.svg?react';
+import IconButton from './components/icon-button';
 import { HorizontallyAndVerticallyScrollable } from './simple.stories';
 
 const meta = {
@@ -203,15 +203,6 @@ export const CustomScrollbarsVariant4: Story = {
 
     const isIntermediate = (value: boolean | undefined) => value === false;
 
-    const buttonCls = css({
-      border: 'none',
-      cursor: 'pointer',
-      background: '#FFFFFF',
-      padding: 0,
-      width: 30,
-      height: 30,
-      borderRadius: 15,
-    });
     const arrowCls = css({
       width: 30,
       height: 30,
@@ -233,74 +224,42 @@ export const CustomScrollbarsVariant4: Story = {
               {children}
               {
                 isIntermediate(scrollableState?.isTopEdgeReached) && (
-                  <button
-                    className={cx(
-                      buttonCls,
-                      css({
-                        position: 'absolute',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        top: 10,
-                      }),
-                    )}
+                  <IconButton
+                    position="top-center"
                     onClick={scrollTop}
                   >
                     <CircleUp className={arrowCls} />
-                  </button>
+                  </IconButton>
                 )
               }
               {
                 isIntermediate(scrollableState?.isBottomEdgeReached) && (
-                  <button
-                    className={cx(
-                      buttonCls,
-                      css({
-                        position: 'absolute',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        bottom: 10,
-                      }),
-                    )}
+                  <IconButton
+                    position="bottom-center"
                     onClick={scrollBottom}
                   >
                     <CircleDown className={arrowCls} />
-                  </button>
+                  </IconButton>
                 )
               }
               {
                 isIntermediate(scrollableState?.isLeftEdgeReached) && (
-                  <button
-                    className={cx(
-                      buttonCls,
-                      css({
-                        position: 'absolute',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        left: 10,
-                      }),
-                    )}
+                  <IconButton
+                    position="left-center"
                     onClick={scrollLeft}
                   >
                     <CircleLeft className={arrowCls} />
-                  </button>
+                  </IconButton>
                 )
               }
               {
                 isIntermediate(scrollableState?.isRightEdgeReached) && (
-                  <button
-                    className={cx(
-                      buttonCls,
-                      css({
-                        position: 'absolute',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        right: 10,
-                      }),
-                    )}
+                  <IconButton
+                    position="right-center"
                     onClick={scrollRight}
                   >
                     <CircleRight className={arrowCls} />
-                  </button>
+                  </IconButton>
                 )
               }
             </>
