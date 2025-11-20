@@ -1,11 +1,33 @@
-name: Update README.md
+name: Deploy docs
 
 on: workflow_dispatch
 
 jobs:
+  deploy_docs:
+    name: Run Chromatic
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.4
+      - name: Install dependencies
+        run: npm ci
+      - name: Build package
+        run: npm run build
+      - name: Run Chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          buildScriptName: "build-storybook-docs"
+
   update_chromatic_permalink_in_readme:
     name: "Update chromatic permalink in README.md"
     runs-on: ubuntu-latest
+    needs: deploy_docs
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
