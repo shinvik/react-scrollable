@@ -2,8 +2,8 @@ import { type UIEvent, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, waitFor, fireEvent, fn } from 'storybook/test';
 import { css } from '@emotion/css';
-import Scrollable from './scrollable';
-import useEvent from './hooks/useEvent';
+import Scrollable from '@/scrollable';
+import useEvent from '@/hooks/useEvent';
 
 const meta = {
   title: 'Examples/LazyLoading',
@@ -36,7 +36,7 @@ type Story = StoryObj<typeof meta>;
 const createRange = (
   start: number,
   end: number
-) => Array.from({ length: end - start + 1 }).map((_, i) => start + i);
+) => Array.from({ length: end - start }).map((_, i) => start + i);
 
 const verticalScrolling = css`
   display: flex;

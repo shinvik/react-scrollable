@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, waitFor, fireEvent, fn } from 'storybook/test';
-import { isEqual, toContentSize, toScrollbarSize } from './utils/math';
-import Scrollable from './scrollable';
+import { isEqual, toContentSize, toScrollbarSize } from '@/utils/math';
+import Scrollable from '@/scrollable';
 
 const meta = {
   title: 'Examples/Simple',
