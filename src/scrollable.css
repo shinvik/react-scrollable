@@ -19,6 +19,10 @@
     overflow: hidden;
   }
 
+  &__content-inner {
+    display: inline-block;
+  }
+
   .scrollable__scrollbar_horizontal {
     visibility: hidden;
   }

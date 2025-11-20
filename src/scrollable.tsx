@@ -273,7 +273,9 @@ function Scrollable({
             {...scrollHandlers}
             {...pointerHandlers}
           >
-            {typeof children === 'function' ? children(scrollablePayload) : children}
+            <div className="scrollable__content-inner">
+              {typeof children === 'function' ? children(scrollablePayload) : children}
+            </div>
           </div>
         </div>
         <Scrollbar
