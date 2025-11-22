@@ -19,7 +19,10 @@
   "keywords": [
     "react-scrollable",
     "scrollable",
-    "overflow"
+    "overflow",
+    "custom scrollabar",
+    "styled scrollabar",
+    "scrollbar"
   ],
   "scripts": {
     "build": "tsc -b && vite build",
