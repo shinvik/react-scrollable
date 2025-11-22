@@ -11,6 +11,7 @@ type useScrollHandlersPropsType = {
   onRightEdgeReached?: (event: UIEvent<HTMLElement>) => void;
   onTopEdgeReached?: (event: UIEvent<HTMLElement>) => void;
   onBottomEdgeReached?: (event: UIEvent<HTMLElement>) => void;
+  suppressHandlers: boolean;
   ignoresScrollEvents: RefObject<boolean>;
 }
 const useScrollHandlers = ({
@@ -21,6 +22,7 @@ const useScrollHandlers = ({
   onRightEdgeReached,
   onTopEdgeReached,
   onBottomEdgeReached,
+  suppressHandlers,
   ignoresScrollEvents,
 }: useScrollHandlersPropsType) => {
   const prevScrollTopRef = useRef(0);
@@ -62,20 +64,22 @@ const useScrollHandlers = ({
 
     const scrollableRect = currentTarget.getBoundingClientRect();
 
-    if (prevScrollTopRef.current !== currentTarget.scrollTop) {
-      if (currentTarget.scrollTop === 0) {
-        onTopEdgeReached?.(event);
+    if (!suppressHandlers) {
+      if (prevScrollTopRef.current !== currentTarget.scrollTop) {
+        if (currentTarget.scrollTop === 0) {
+          onTopEdgeReached?.(event);
+        }
+        if (currentTarget.scrollTop === currentTarget.scrollHeight - scrollableRect.height) {
+          onBottomEdgeReached?.(event);
+        }
       }
-      if (currentTarget.scrollTop === currentTarget.scrollHeight - scrollableRect.height) {
-        onBottomEdgeReached?.(event);
-      }
-    }
-    if (prevScrollLeftRef.current !== currentTarget.scrollLeft) {
-      if (currentTarget.scrollLeft === 0) {
-        onLeftEdgeReached?.(event);
-      }
-      if (currentTarget.scrollLeft === currentTarget.scrollWidth - scrollableRect.width) {
-        onRightEdgeReached?.(event);
+      if (prevScrollLeftRef.current !== currentTarget.scrollLeft) {
+        if (currentTarget.scrollLeft === 0) {
+          onLeftEdgeReached?.(event);
+        }
+        if (currentTarget.scrollLeft === currentTarget.scrollWidth - scrollableRect.width) {
+          onRightEdgeReached?.(event);
+        }
       }
     }
 

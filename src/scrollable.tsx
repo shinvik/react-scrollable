@@ -74,6 +74,14 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    */
   onScrollableStateChange?: (scrollableState: ScrollableStateType | undefined) => void;
   /**
+   * suppress handlers: `onLeftEdgeReached`, `onRightEdgeReached`, `onTopEdgeReached`, `onBottomEdgeReached`, `onScrollableStateChange`
+   *
+   * This is useful, for instance, for temporarily disabling event handlers while dynamic content loads and a splash screen is displayed.
+   * In this case, the splash screen's dimensions must not affect the scrolling behavior of the element content.
+   * This property does not suppress native handlers (e.g., onScroll).
+   */
+  suppressHandlers?: boolean;
+  /**
    * used to add class name to the HTML element with `overflow: auto`
    */
   className?: string;
@@ -162,6 +170,7 @@ function Scrollable({
   onTopEdgeReached = undefined,
   onBottomEdgeReached = undefined,
   onScrollableStateChange = undefined,
+  suppressHandlers = false,
   ...props
 }: ScrollablePropsType, ref: Ref<HTMLDivElement>): ReactElement {
   const [visibility, setVisibility] = useState([false, false]);
@@ -193,9 +202,11 @@ function Scrollable({
   const ignoresScrollEvents = useRef(false);
 
   const onScroll = useEvent((event: UIEvent<HTMLElement>) => {
-    startTransition(() => {
-      setScrollableState(event.currentTarget);
-    });
+    if (!suppressHandlers) {
+      startTransition(() => {
+        setScrollableState(event.currentTarget);
+      });
+    }
     props.onScroll?.(event);
   })
 
@@ -207,6 +218,7 @@ function Scrollable({
     onRightEdgeReached,
     onTopEdgeReached,
     onBottomEdgeReached,
+    suppressHandlers,
     ignoresScrollEvents,
   });
 

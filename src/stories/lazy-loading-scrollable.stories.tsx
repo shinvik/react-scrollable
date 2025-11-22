@@ -84,17 +84,13 @@ export const LazyHorizontalScrollable: Story = {
     const [isLoading, setIsLoading] = useState(false);
     const onRightEdgeReachedEvent = useEvent(async (event: UIEvent) => {
       onRightEdgeReached?.(event);
-      // is loading
-      if (isLoading) {
-        return;
-      }
       // max loaded items
       if (items.length >= 50) {
         return;
       }
       setIsLoading(true);
       await new Promise((resolve) => {
-        setTimeout(resolve, 3000);
+        setTimeout(resolve, 1000);
       })
       setItems([
         ...items,
@@ -107,6 +103,7 @@ export const LazyHorizontalScrollable: Story = {
       <Scrollable
         {...args}
         onRightEdgeReached={onRightEdgeReachedEvent}
+        suppressHandlers={isLoading}
       >
         <div className={horizontalScrolling}>
           {
@@ -162,6 +159,17 @@ export const LazyHorizontalScrollable: Story = {
         await expect(args.onRightEdgeReached).toHaveBeenCalled();
       });
 
+      await expect(
+        canvas.queryByText('loading...')
+      ).toBeInTheDocument();
+
+      // waiting for the next items to load
+      await waitFor(async () => {
+        await expect(
+          canvas.queryByText('loading...')
+        ).not.toBeInTheDocument();
+      });
+
       await fireEvent.scroll(scrollable, {
         target: {
           scrollLeft: 0,
@@ -195,17 +203,13 @@ export const LazyVerticalScrollable: Story = {
     const [isLoading, setIsLoading] = useState(false);
     const onBottomEdgeReachedEvent = useEvent(async (event: UIEvent) => {
       onBottomEdgeReached?.(event);
-      // is loading
-      if (isLoading) {
-        return;
-      }
       // max loaded items
       if (items.length >= 50) {
         return;
       }
       setIsLoading(true);
       await new Promise((resolve) => {
-        setTimeout(resolve, 3000);
+        setTimeout(resolve, 1000);
       })
       setItems([
         ...items,
@@ -217,6 +221,7 @@ export const LazyVerticalScrollable: Story = {
       <Scrollable
         {...args}
         onBottomEdgeReached={onBottomEdgeReachedEvent}
+        suppressHandlers={isLoading}
       >
         <div className={verticalScrolling}>
           {
@@ -272,6 +277,17 @@ export const LazyVerticalScrollable: Story = {
 
       await waitFor(async () => {
         await expect(args.onBottomEdgeReached).toHaveBeenCalled();
+      });
+
+      await expect(
+        canvas.queryByText('loading...')
+      ).toBeInTheDocument();
+
+      // waiting for the next items to load
+      await waitFor(async () => {
+        await expect(
+          canvas.queryByText('loading...')
+        ).not.toBeInTheDocument();
       });
 
       await fireEvent.scroll(scrollable, {
