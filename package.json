@@ -1,5 +1,6 @@
 {
   "name": "@shinvik/react-scrollable",
+  "description": "Scrollable is a custom component made to handle scrolling with a custom scrollbar",
   "author": "Viktor Voloshin <viktor_the_great@mail.ru>",
   "version": "0.1.0",
   "type": "module",
@@ -14,6 +15,11 @@
   },
   "sideEffects": [
     "**/*.css"
+  ],
+  "keywords": [
+    "react-scrollable",
+    "scrollable",
+    "overflow"
   ],
   "scripts": {
     "build": "tsc -b && vite build",
