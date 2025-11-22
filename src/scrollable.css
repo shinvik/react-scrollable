@@ -21,6 +21,7 @@
 
   &__content-inner {
     display: inline-block;
+    min-width: 100%;
   }
 
   .scrollable__scrollbar_horizontal {
