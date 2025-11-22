@@ -179,7 +179,7 @@ export const CustomScrollbarsVariant4: Story = {
     children,
     ...props
   }) {
-    const scrollableRef = useRef<HTMLDivElement>(null)
+    const scrollableRef = useRef<HTMLElement>(null)
     const scrollTop = useCallback(() => {
       if (scrollableRef.current) {
         scrollableRef.current.scrollTop = 0;

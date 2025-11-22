@@ -172,13 +172,13 @@ function Scrollable({
   onScrollableStateChange = undefined,
   suppressHandlers = false,
   ...props
-}: ScrollablePropsType, ref: Ref<HTMLDivElement>): ReactElement {
+}: ScrollablePropsType, ref: Ref<HTMLElement>): ReactElement {
   const [visibility, setVisibility] = useState([false, false]);
   const [hasHorizontalScrollbar, hasVerticalScrollbar] = visibility;
 
   const vScrollbarRef = useRef<HTMLDivElement>(null);
   const hScrollbarRef = useRef<HTMLDivElement>(null);
-  const scrollableRef = useRef<HTMLDivElement>(null);
+  const scrollableRef = useRef<HTMLElement>(null);
 
   const scrollableId = useMemo(() => props.id ?? generateUniqId(), [props.id]);
 
@@ -280,7 +280,7 @@ function Scrollable({
               ...style,
               ...makeStyle(styles?.content, scrollablePayload),
             }}
-            ref={composeRef(ref, scrollableRef)}
+            ref={composeRef(ref, scrollableRef) as Ref<HTMLDivElement>}
             data-testid="scrollable"
             {...scrollHandlers}
             {...pointerHandlers}
@@ -310,7 +310,7 @@ function Scrollable({
 }
 
 const MemoScrollable = memo(forwardRef<
-  HTMLDivElement,
+  HTMLElement,
   ScrollablePropsType
 >(Scrollable));
 
