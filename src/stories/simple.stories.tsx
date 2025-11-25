@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, waitFor, fireEvent, fn } from 'storybook/test';
 import { isEqual, toContentSize, toScrollbarSize } from '@/utils/math';
 import Scrollable from '@/scrollable';
+import { getAttribute } from './utils';
 
 const meta = {
   title: 'Examples/Simple',
@@ -47,14 +48,6 @@ const meta = {
 } satisfies Meta<typeof Scrollable>;
 
 export default meta;
-
-const getAttribute = (
-  element: HTMLElement,
-  attribute: string,
-) => {
-  const value = element.getAttribute(attribute);
-  return value ? parseFloat(value) : 0
-}
 
 type Story = StoryObj<typeof meta>;
 

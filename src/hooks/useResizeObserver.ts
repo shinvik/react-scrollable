@@ -1,9 +1,9 @@
 import { type RefObject, useLayoutEffect, useMemo } from 'react';
+import { floor, isMore } from '@/utils/math';
+import makePx from '@/utils/makePx';
+import setScrollbarOffset from '@/utils/setScrollbarOffset';
 import useEvent from './useEvent';
 import useRAF from './useRAF';
-import { floor, isMore } from '../utils/math';
-import makePx from '../utils/makePx';
-import setAttributes from '../utils/setAttributes';
 
 type ScrollbarsSizeType = {
   hThumbSize: number;
@@ -53,17 +53,19 @@ const useResizeObserver = ({
         const vScrollbar = vScrollbarRef.current;
         const hScrollbar = hScrollbarRef.current;
         if (vScrollbar) {
-          const isHidden = vThumbSize === 0;
           vScrollbar.style.height = makePx(vThumbSize);
-          setAttributes(vScrollbar, {
-            'aria-hidden': isHidden.toString(),
-          });
+          setScrollbarOffset(vScrollbar, {
+            scrollableElement,
+            value: scrollableElement.scrollTop,
+            isVertical: true,
+          })
         }
         if (hScrollbar) {
-          const isHidden = hThumbSize === 0;
           hScrollbar.style.width = makePx(hThumbSize);
-          setAttributes(hScrollbar, {
-            'aria-hidden': isHidden.toString(),
+          setScrollbarOffset(hScrollbar, {
+            scrollableElement,
+            value: scrollableElement.scrollLeft,
+            isVertical: false,
           });
         }
       });
@@ -78,6 +80,7 @@ const useResizeObserver = ({
     vScrollbarRef,
     hScrollbarRef,
     onResizeEvent,
+    rAF,
   ]);
 
   useLayoutEffect(() => {

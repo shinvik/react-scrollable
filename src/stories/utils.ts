@@ -8,3 +8,11 @@ export const loadRange = (start: number, end: number, step: number = 1) => new P
     resolve(createRange(start, end, step))
   }, 1000);
 });
+
+export const getAttribute = (
+  element: HTMLElement,
+  attribute: string,
+) => {
+  const value = element.getAttribute(attribute);
+  return value ? parseFloat(value) : 0
+}

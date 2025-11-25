@@ -1,7 +1,7 @@
 import { type RefObject, type UIEvent, useRef } from 'react';
+import setScrollbarOffset from '@/utils/setScrollbarOffset';
 import useEvent from './useEvent';
 import useRAF from './useRAF';
-import setScrollbarOffset from '../utils/setScrollbarOffset';
 
 type useScrollHandlersPropsType = {
   hScrollbarRef: RefObject<HTMLElement | null>;
