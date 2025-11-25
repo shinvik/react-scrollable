@@ -4,6 +4,7 @@ import { expect, waitFor, fireEvent, fn } from 'storybook/test';
 import { css } from '@emotion/css';
 import Scrollable from '@/scrollable';
 import useEvent from '@/hooks/useEvent';
+import { createRange, loadRange } from './utils';
 
 const meta = {
   title: 'Examples/LazyLoading',
@@ -32,11 +33,6 @@ const meta = {
 export default meta;
 
 type Story = StoryObj<typeof meta>;
-
-const createRange = (
-  start: number,
-  end: number
-) => Array.from({ length: end - start }).map((_, i) => start + i);
 
 const verticalScrolling = css`
   display: flex;
@@ -80,22 +76,20 @@ export const LazyHorizontalScrollable: Story = {
     onRightEdgeReached,
     ...args
   }) {
-    const [items, setItems] = useState(() => createRange(1, 10));
+    const [items, setItems] = useState<number[]>(() => createRange(1, 10));
     const [isLoading, setIsLoading] = useState(false);
     const onRightEdgeReachedEvent = useEvent(async (event: UIEvent) => {
       onRightEdgeReached?.(event);
-      // max loaded items
-      if (items.length >= 50) {
-        return;
-      }
       setIsLoading(true);
-      await new Promise((resolve) => {
-        setTimeout(resolve, 1000);
-      })
+      const lastItem = items.at(-1) ?? 0;
+      const nextItems = await loadRange(
+        lastItem + 1,
+        lastItem + 10,
+      );
       setItems([
         ...items,
-        ...createRange(items.length + 1, items.length + 10)],
-      );
+        ...nextItems,
+      ]);
       setIsLoading(false);
     });
 
@@ -203,18 +197,16 @@ export const LazyVerticalScrollable: Story = {
     const [isLoading, setIsLoading] = useState(false);
     const onBottomEdgeReachedEvent = useEvent(async (event: UIEvent) => {
       onBottomEdgeReached?.(event);
-      // max loaded items
-      if (items.length >= 50) {
-        return;
-      }
       setIsLoading(true);
-      await new Promise((resolve) => {
-        setTimeout(resolve, 1000);
-      })
+      const lastItem = items.at(-1) ?? 0;
+      const nextItems = await loadRange(
+        lastItem + 1,
+        lastItem + 10,
+      );
       setItems([
         ...items,
-        ...createRange(items.length + 1, items.length + 10)],
-      );
+        ...nextItems,
+      ]);
       setIsLoading(false);
     });
     return (
