@@ -3,7 +3,6 @@ import { floor, isMore } from '@/utils/math';
 import makePx from '@/utils/makePx';
 import setScrollbarOffset from '@/utils/setScrollbarOffset';
 import useEvent from './useEvent';
-import useRAF from './useRAF';
 
 type ScrollbarsSizeType = {
   hThumbSize: number;
@@ -37,7 +36,6 @@ const useResizeObserver = ({
   vScrollbarRef,
   onResize,
 }: UseScrollableObserverPropsType) => {
-  const rAF = useRAF();
   const onResizeEvent = useEvent(onResize);
   const resizeObserver = useMemo(() => new ResizeObserver(() => {
     const scrollableElement = scrollableRef.current;
@@ -49,27 +47,24 @@ const useResizeObserver = ({
         ? floor(scrollableElement.offsetHeight / (scrollableElement.scrollHeight / scrollableElement.offsetHeight), 1)
         : 0;
 
-      rAF(() => {
-        const vScrollbar = vScrollbarRef.current;
-        const hScrollbar = hScrollbarRef.current;
-        if (vScrollbar) {
-          vScrollbar.style.height = makePx(vThumbSize);
-          setScrollbarOffset(vScrollbar, {
-            scrollableElement,
-            value: scrollableElement.scrollTop,
-            isVertical: true,
-          })
-        }
-        if (hScrollbar) {
-          hScrollbar.style.width = makePx(hThumbSize);
-          setScrollbarOffset(hScrollbar, {
-            scrollableElement,
-            value: scrollableElement.scrollLeft,
-            isVertical: false,
-          });
-        }
-      });
-
+      const vScrollbar = vScrollbarRef.current;
+      const hScrollbar = hScrollbarRef.current;
+      if (vScrollbar) {
+        vScrollbar.style.height = makePx(vThumbSize);
+        setScrollbarOffset(vScrollbar, {
+          scrollableElement,
+          value: scrollableElement.scrollTop,
+          isVertical: true,
+        })
+      }
+      if (hScrollbar) {
+        hScrollbar.style.width = makePx(hThumbSize);
+        setScrollbarOffset(hScrollbar, {
+          scrollableElement,
+          value: scrollableElement.scrollLeft,
+          isVertical: false,
+        });
+      }
       onResizeEvent({
         hThumbSize,
         vThumbSize,
@@ -80,7 +75,6 @@ const useResizeObserver = ({
     vScrollbarRef,
     hScrollbarRef,
     onResizeEvent,
-    rAF,
   ]);
 
   useLayoutEffect(() => {
