@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import debounce from '../utils/debounce';
+import debounce from '@/utils/debounce';
 import useEvent from './useEvent';
 
 type TCb<A extends unknown[], R> = (...args: A) => R;

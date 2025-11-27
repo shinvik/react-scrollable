@@ -1,6 +1,6 @@
 import { type RefObject, useLayoutEffect, useState, useEffect } from 'react';
-import type { ScrollableStateType } from '../types';
-import isEqual from '../utils/isEqual';
+import type { ScrollableStateType } from '@/types';
+import isEqual from '@/utils/isEqual';
 import useEvent from './useEvent';
 
 type TUseScrollableStateProps = {
