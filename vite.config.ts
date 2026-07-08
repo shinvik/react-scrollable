@@ -44,6 +44,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@/assets': resolve(__dirname, './src/stories/assets'),
       '@': resolve(__dirname, './src'),
     },
   },
