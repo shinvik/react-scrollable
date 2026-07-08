@@ -1,7 +1,7 @@
 import Scrollable, { type ClassNamesType } from '@shinvik/react-scrollable';
 import { css } from '@emotion/css';
-import vDragUrl from '@/assets/v-drag.svg?url';
-import hDragUrl from '@/assets/h-drag.svg?url';
+import vDragUrl from '@/stories/assets/v-drag.svg?url';
+import hDragUrl from '@/stories/assets/h-drag.svg?url';
 import type { ReactNode } from 'react';
 
 const classNames: ClassNamesType = {

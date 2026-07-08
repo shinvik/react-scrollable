@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import Scrollable from '@/scrollable';
+import Scrollable from '@shinvik/react-scrollable';
 import { HorizontallyAndVerticallyScrollable } from './simple.stories';
 
 import CustomScrollbarsVariant1Example from './examples/CustomScrollbarsVariant1Example';

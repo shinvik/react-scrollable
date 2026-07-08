@@ -2,7 +2,7 @@ import { type UIEvent, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, waitFor, fireEvent, fn } from 'storybook/test';
 import { css } from '@emotion/css';
-import Scrollable from '@/scrollable';
+import Scrollable from '@shinvik/react-scrollable';
 import useEvent from '@/hooks/useEvent';
 import { createRange, loadRange } from './utils';
 

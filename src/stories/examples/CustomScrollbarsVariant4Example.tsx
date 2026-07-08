@@ -2,10 +2,10 @@ import Scrollable, { type ClassNamesType } from '@shinvik/react-scrollable';
 import { css } from '@emotion/css';
 import { type ReactNode, useCallback, useRef } from 'react';
 import IconButton from '../components/icon-button';
-import CircleUp from '@/assets/circle-up.svg?react';
-import CircleDown from '@/assets/circle-down.svg?react';
-import CircleLeft from '@/assets/circle-left.svg?react';
-import CircleRight from '@/assets/circle-right.svg?react';
+import CircleUp from '@/stories/assets/circle-up.svg?react';
+import CircleDown from '@/stories/assets/circle-down.svg?react';
+import CircleLeft from '@/stories/assets/circle-left.svg?react';
+import CircleRight from '@/stories/assets/circle-right.svg?react';
 
 const classNames: ClassNamesType = {
   scrollable: css({

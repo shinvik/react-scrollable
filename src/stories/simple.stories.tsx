@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, waitFor, fireEvent, fn } from 'storybook/test';
 import { isEqual, toContentSize, toScrollbarSize } from '@/utils/math';
-import Scrollable from '@/scrollable';
+import Scrollable from '@shinvik/react-scrollable';
 import { getAttribute } from './utils';
 import { longText, middleText, shortText } from './constants';
 import RawSimpleScrollableExample from './examples/SimpleScrollableExample?raw';
