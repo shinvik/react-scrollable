@@ -25,7 +25,7 @@ export type ScrollablePayloadType = Partial<ScrollableStateType> & {
   showThumbOnHover: boolean;
 }
 
-export type ClassNamesType = {
+export type ClassNamesType = Partial<{
   /**
    * the wrapper element class containing the scrollable area and scrollbars, implemented as a dynamic grid.
    */
@@ -51,7 +51,7 @@ export type ClassNamesType = {
   thumb: ClassNameStringOrFnType<{
     isVertical: boolean;
   }>;
-}
+}>
 
 export type StylesOrFnType<Payload = undefined> =
   | CSSProperties
@@ -61,7 +61,7 @@ export type StylesOrFnType<Payload = undefined> =
     : (payload: Payload) => CSSProperties
   );
 
-export type StylesType = {
+export type StylesType = Partial<{
   /**
    * the wrapper element styles containing the scrollable area and scrollbars, implemented as a dynamic grid.
    */
@@ -87,7 +87,7 @@ export type StylesType = {
   thumb: StylesOrFnType<{
     isVertical: boolean;
   }>;
-}
+}>
 
 export type ScrollableStateType = {
   /**

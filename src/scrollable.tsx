@@ -99,7 +99,7 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    * @param {string|Array<string>} classNames.scrollbar scrollbar element classname
    * @param {string|Array<string>} classNames.thumb thumb element classname
    */
-  classNames?: Partial<ClassNamesType>;
+  classNames?: ClassNamesType;
   /**
    * <a name="styles-props-anchor"></a>
    * A set of styles for styling scrollable component. The values for the classes can be a string or a function that takes the appropriate argument and returns a string.
@@ -110,9 +110,9 @@ export type ScrollablePropsType = Omit<HTMLAttributes<HTMLElement>, 'children'> 
    * @param {string|Array<string>} styles.scrollbar scrollbar element styles
    * @param {string|Array<string>} styles.thumb thumb element styles
    */
-  styles?: Partial<StylesType>;
+  styles?: StylesType;
   /**
-   * Содержимое прокручиваемой области
+   * The content of the scrollable area.
    * @param {Object} payload - scrollable payload
    * @param {boolean} payload.isTopEdgeReached Is the element scrolled to the top?
    * @param {boolean} payload.isBottomEdgeReached Is the element scrolled to the bottom?
