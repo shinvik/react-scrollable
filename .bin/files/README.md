@@ -11,4 +11,4 @@ Scrollable is a custom component made to handle scrolling with a custom scrollba
 
 ## Docs
 
-You can check out docs [here](${{ env.DOCS_LINK }} "more info")
+You can check out docs [here]($DOC_LINK "more info")

@@ -1,60 +1,83 @@
 name: Deploy docs
-
-on: workflow_dispatch
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+env:
+  USER_NAME: ${{ vars.USER_NAME || 'github-actions[bot]' }}
+  USER_EMAIL: ${{ vars.USER_EMAIL || 'github-actions[bot]@users.noreply.github.com' }}
+permissions:
+  contents: write
 
 jobs:
-  deploy_docs:
-    name: Deploy Chromatic Docs
+  get_doc_last_version:
+    name: Get doc last version
     runs-on: ubuntu-latest
+    environment: github-pages
+    outputs:
+      doc_last_version: ${{ steps.script_to_get_last_version.outputs.last_version }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - run: chmod +x .bin/get-last-version.sh
+      - id: script_to_get_last_version
+        run: echo "last_version=$(.bin/get-last-version.sh)" >> "$GITHUB_OUTPUT"
+
+  add_doc_root_file:
+    name: Add a root index file if missing, to redirect to the latest doc version
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
         with:
-          node-version: 20.19.4
+          fetch-depth: 0
+      - run: chmod +x .bin/add-doc-root-file.sh
+      - name: Add doc root index file
+        run: .bin/add-doc-root-file.sh
+        env:
+          UPDATE_BRANCH: "gh-pages"
+
+  deploy_docs:
+    name: Deploy Docs
+    runs-on: ubuntu-latest
+    needs: [add_doc_root_file, get_doc_last_version]
+    environment: github-pages
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'npm' # Adjust caching strategy and configuration if using other package managers
       - name: Install dependencies
         run: npm ci
       - name: Build Storybook Docs
-        run: npm run build-storybook-docs
-      - name: Deploy to GitHub Pages
+        run: npm run build && npm run build-storybook-docs
+      - name: Deploy docs
         uses: peaceiris/actions-gh-pages@v3
         with:
+          allow_empty_commit: true
+          destination_dir: ./${{ github.ref_name }}
+          force_orphan: false
+          keep_files: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./storybook-static
-
-  update_chromatic_permalink_in_readme:
-    name: Update chromatic permalink in README.md
-    runs-on: ubuntu-latest
-    needs: deploy_docs
-    if: ${{ false }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+          user_email: ${{ env.USER_EMAIL }}
+          user_name: ${{ env.USER_NAME }}
+      - name: Deploy latest docs
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref_name == needs.get_doc_last_version.outputs.doc_last_version
         with:
-          fetch-depth: 0
-
-      - name: Exposes metadata as environment variable
-        uses: varunsridharan/action-repository-meta@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get Short SHA
-        run: echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
-
-      - name: Update chromatic permalink
-        uses: varunsridharan/action-dynamic-readme@main
-        with:
-          commit_message: "docs: update chromatic permalink in README.md"
-          committer_name: "v.voloshin"
-          committer_email: "viktor_the_great@mail.ru"
-          global_template_repository: "${{ github.repository_owner }}/${{ github.repository_name }}"
-          files: |
-            .github/readme-templates/README.md=README.md
-        env:
-          DOCS_LINK: "#"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-permissions:
-  contents: write
+          allow_empty_commit: true
+          destination_dir: ./latest
+          force_orphan: false
+          keep_files: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./storybook-static
+          user_email: ${{ env.USER_EMAIL }}
+          user_name: ${{ env.USER_NAME }}
