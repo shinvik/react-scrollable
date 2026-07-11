@@ -11,4 +11,4 @@ Scrollable is a custom component made to handle scrolling with a custom scrollba
 
 ## Docs
 
-You can check out docs [here](https://@shinvik.github.io/react-scrollable/v0.3.0 "more info")
+You can check out docs [here](https://@shinvik.github.io/react-scrollable/v0.3.1 "more info")
