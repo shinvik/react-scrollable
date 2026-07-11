@@ -9,6 +9,10 @@ env:
 permissions:
   contents: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  queue: max
+
 jobs:
   get_doc_last_version:
     name: Get doc last version
@@ -42,7 +46,7 @@ jobs:
   deploy_docs:
     name: Deploy Docs
     runs-on: ubuntu-latest
-    needs: [add_doc_root_file, get_doc_last_version]
+    needs: [ add_doc_root_file, get_doc_last_version ]
     environment: github-pages
     steps:
       - name: Checkout code
