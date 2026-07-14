@@ -2,7 +2,7 @@
   "name": "@shinvik/react-scrollable",
   "description": "Scrollable is a custom component made to handle scrolling with a custom scrollbar",
   "author": "Viktor Voloshin <viktor_the_great@mail.ru>",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "type": "module",
   "main": "./dist/react-scrollable.umd.cjs",
   "module": "./dist/react-scrollable.js",
