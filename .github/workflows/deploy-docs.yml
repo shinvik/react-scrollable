@@ -8,6 +8,7 @@ env:
   USER_EMAIL: ${{ vars.USER_EMAIL || 'github-actions[bot]@users.noreply.github.com' }}
   STORYBOOK_SIDEBAR_VISIBILITY: ${{ vars.STORYBOOK_SIDEBAR_VISIBILITY || 'visible' }}
   STORYBOOK_TOOLBAR_VISIBILITY: ${{ vars.STORYBOOK_TOOLBAR_VISIBILITY || 'visible' }}
+  DEPLOY_BRANCH: ${{ vars.DEPLOY_BRANCH || 'gh-pages' }}
 permissions:
   contents: write
 
@@ -16,43 +17,9 @@ concurrency:
   queue: max
 
 jobs:
-  get_doc_last_version:
-    name: Get doc last version
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      deployment: false
-    outputs:
-      doc_last_version: ${{ steps.script_to_get_last_version.outputs.last_version }}
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-      - run: chmod +x .bin/get-last-version.sh
-      - id: script_to_get_last_version
-        run: echo "last_version=$(.bin/get-last-version.sh)" >> "$GITHUB_OUTPUT"
-
-  add_doc_root_file:
-    name: Add a root index file if missing, to redirect to the latest doc version
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      deployment: false
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-      - run: chmod +x .bin/add-doc-root-file.sh
-      - name: Add doc root index file
-        run: .bin/add-doc-root-file.sh
-        env:
-          UPDATE_BRANCH: "gh-pages"
-
   deploy_docs:
     name: Deploy Docs
     runs-on: ubuntu-latest
-    needs: [ add_doc_root_file, get_doc_last_version ]
     environment:
       name: github-pages
       deployment: false
@@ -66,30 +33,5 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm' # Adjust caching strategy and configuration if using other package managers
-      - name: Install dependencies
-        run: npm ci
-      - name: Build Storybook Docs
-        run: npm run build && npm run build-storybook-docs
       - name: Deploy docs
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          allow_empty_commit: true
-          destination_dir: ./${{ github.ref_name }}
-          force_orphan: false
-          keep_files: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./storybook-static
-          user_email: ${{ env.USER_EMAIL }}
-          user_name: ${{ env.USER_NAME }}
-      - name: Deploy latest docs
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.ref_name == needs.get_doc_last_version.outputs.doc_last_version
-        with:
-          allow_empty_commit: true
-          destination_dir: ./latest
-          force_orphan: false
-          keep_files: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./storybook-static
-          user_email: ${{ env.USER_EMAIL }}
-          user_name: ${{ env.USER_NAME }}
+        run: .bin/deploy-docs.sh
