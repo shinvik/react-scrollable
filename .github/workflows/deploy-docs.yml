@@ -6,6 +6,8 @@ on:
 env:
   USER_NAME: ${{ vars.USER_NAME || 'github-actions[bot]' }}
   USER_EMAIL: ${{ vars.USER_EMAIL || 'github-actions[bot]@users.noreply.github.com' }}
+  STORYBOOK_SIDEBAR_VISIBILITY: ${{ vars.STORYBOOK_SIDEBAR_VISIBILITY || 'visible' }}
+  STORYBOOK_TOOLBAR_VISIBILITY: ${{ vars.STORYBOOK_TOOLBAR_VISIBILITY || 'visible' }}
 permissions:
   contents: write
 
@@ -17,7 +19,9 @@ jobs:
   get_doc_last_version:
     name: Get doc last version
     runs-on: ubuntu-latest
-    environment: github-pages
+    environment:
+      name: github-pages
+      deployment: false
     outputs:
       doc_last_version: ${{ steps.script_to_get_last_version.outputs.last_version }}
     steps:
@@ -31,7 +35,9 @@ jobs:
   add_doc_root_file:
     name: Add a root index file if missing, to redirect to the latest doc version
     runs-on: ubuntu-latest
-    environment: github-pages
+    environment:
+      name: github-pages
+      deployment: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -47,7 +53,9 @@ jobs:
     name: Deploy Docs
     runs-on: ubuntu-latest
     needs: [ add_doc_root_file, get_doc_last_version ]
-    environment: github-pages
+    environment:
+      name: github-pages
+      deployment: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
