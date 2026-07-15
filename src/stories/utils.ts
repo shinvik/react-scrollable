@@ -6,7 +6,7 @@ export function createRange(start: number, end: number, step: number = 1) {
 export const loadRange = (start: number, end: number, step: number = 1) => new Promise<number[]>((resolve) => {
   setTimeout(() => {
     resolve(createRange(start, end, step))
-  }, 1000);
+  }, 1_000);
 });
 
 export const getAttribute = (

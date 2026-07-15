@@ -1,17 +1,14 @@
-import { type UIEvent, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, waitFor, fireEvent, fn } from 'storybook/test';
 import { css } from '@emotion/css';
 import Scrollable from '@shinvik/react-scrollable';
-import useEvent from '@/hooks/useEvent';
-import { createRange, loadRange } from './utils';
+import { loadRange } from './utils';
 
 const meta = {
   title: 'Examples/LazyLoading',
-  component: Scrollable,
+  component: Scrollable.Lazy,
   args: {
     showThumbOnHover: false,
-    children: null,
   },
   argTypes: {
     showThumbOnHover: {
@@ -28,38 +25,31 @@ const meta = {
       ],
     },
   },
-} satisfies Meta<typeof Scrollable>;
+} satisfies Meta<typeof Scrollable.Lazy>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const verticalScrolling = css`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-const verticalScrollingItem = css`
-  height: 100px;
-  line-height: 100px;
-  width: 100%;
-  text-align: center;
-  border: 1px solid #cccccc;
-  box-sizing: border-box;
-  flex-shrink: 0;
-`;
-const horizontalScrolling = css`
-  display: flex;
-  gap: 10px;
-`;
-const horizontalScrollingItem = css`
-  height: 100px;
-  line-height: 100px;
-  width: 200px;
-  text-align: center;
-  border: 1px solid #cccccc;
-  flex-shrink: 0;
-`;
+const lazyScrollableCls = {
+  horizontalItem: css`
+    height: 100px;
+    line-height: 100px;
+    width: 200px;
+    text-align: center;
+    border: 1px solid #cccccc;
+    flex-shrink: 0;
+  `,
+  verticalItem: css`
+    height: 100px;
+    line-height: 100px;
+    width: 100%;
+    text-align: center;
+    border: 1px solid #cccccc;
+    box-sizing: border-box;
+    flex-shrink: 0;
+  `,
+}
 
 export const LazyHorizontalScrollable: Story = {
   args: {
@@ -69,56 +59,41 @@ export const LazyHorizontalScrollable: Story = {
         margin: '0 auto',
       },
     },
+    loadItems: fn(),
+    renderItem: fn(),
+    renderPlaceholder: fn(),
     onLeftEdgeReached: fn(),
     onRightEdgeReached: fn(),
   },
-  render: function Render({
-    onRightEdgeReached,
-    ...args
-  }) {
-    const [items, setItems] = useState<number[]>(() => createRange(1, 10));
-    const [isLoading, setIsLoading] = useState(false);
-    const onRightEdgeReachedEvent = useEvent(async (event: UIEvent) => {
-      onRightEdgeReached?.(event);
-      setIsLoading(true);
-      const lastItem = items.at(-1) ?? 0;
-      const nextItems = await loadRange(
-        lastItem + 1,
-        lastItem + 10,
-      );
-      setItems([
-        ...items,
-        ...nextItems,
-      ]);
-      setIsLoading(false);
-    });
-
+  render: function Render(args) {
     return (
-      <Scrollable
+      <Scrollable.Lazy
         {...args}
-        onRightEdgeReached={onRightEdgeReachedEvent}
-        suppressHandlers={isLoading}
-      >
-        <div className={horizontalScrolling}>
-          {
-            items.map((item) => (
-              <div
-                key={item}
-                className={horizontalScrollingItem}
-              >
-                {item}
-              </div>
-            ))
+        align="horizontal"
+        loadItems={async ({
+          offset,
+        }) => {
+          const items = await loadRange(offset + 1, offset + 10);
+          return {
+            items,
+            hasNext: items.length < 1_000,
           }
-          {
-            isLoading && (
-              <div className={horizontalScrollingItem}>
-                loading...
-              </div>
-            )
-          }
-        </div>
-      </Scrollable>
+        }}
+        renderItem={(item: number) => {
+          return (
+            <div className={lazyScrollableCls.horizontalItem}>
+              {item}
+            </div>
+          )
+        }}
+        renderPlaceholder={() => {
+          return (
+            <div className={lazyScrollableCls.horizontalItem}>
+              loading...
+            </div>
+          )
+        }}
+      />
     )
   },
   async play({
@@ -151,17 +126,12 @@ export const LazyHorizontalScrollable: Story = {
 
       await waitFor(async () => {
         await expect(args.onRightEdgeReached).toHaveBeenCalled();
+        await expect(canvas.queryByText('loading...')).toBeInTheDocument();
       });
-
-      await expect(
-        canvas.queryByText('loading...')
-      ).toBeInTheDocument();
 
       // waiting for the next items to load
       await waitFor(async () => {
-        await expect(
-          canvas.queryByText('loading...')
-        ).not.toBeInTheDocument();
+        await expect(canvas.queryByText('loading...')).not.toBeInTheDocument();
       });
 
       await fireEvent.scroll(scrollable, {
@@ -189,52 +159,35 @@ export const LazyVerticalScrollable: Story = {
     onTopEdgeReached: fn(),
     onBottomEdgeReached: fn(),
   },
-  render: function Render({
-    onBottomEdgeReached,
-    ...args
-  }) {
-    const [items, setItems] = useState(() => createRange(1, 10));
-    const [isLoading, setIsLoading] = useState(false);
-    const onBottomEdgeReachedEvent = useEvent(async (event: UIEvent) => {
-      onBottomEdgeReached?.(event);
-      setIsLoading(true);
-      const lastItem = items.at(-1) ?? 0;
-      const nextItems = await loadRange(
-        lastItem + 1,
-        lastItem + 10,
-      );
-      setItems([
-        ...items,
-        ...nextItems,
-      ]);
-      setIsLoading(false);
-    });
+  render: function Render(args) {
     return (
-      <Scrollable
+      <Scrollable.Lazy
         {...args}
-        onBottomEdgeReached={onBottomEdgeReachedEvent}
-        suppressHandlers={isLoading}
-      >
-        <div className={verticalScrolling}>
-          {
-            items.map((item) => (
-              <div
-                key={item}
-                className={verticalScrollingItem}
-              >
-                {item}
-              </div>
-            ))
+        align="vertical"
+        loadItems={async ({
+          offset,
+        }) => {
+          const items = await loadRange(offset + 1, offset + 10);
+          return {
+            items,
+            hasNext: items.length < 1_000,
           }
-          {
-            isLoading && (
-              <div className={verticalScrollingItem}>
-                loading...
-              </div>
-            )
-          }
-        </div>
-      </Scrollable>
+        }}
+        renderItem={(item: number) => {
+          return (
+            <div className={lazyScrollableCls.verticalItem}>
+              {item}
+            </div>
+          )
+        }}
+        renderPlaceholder={() => {
+          return (
+            <div className={lazyScrollableCls.verticalItem}>
+              loading...
+            </div>
+          )
+        }}
+      />
     )
   },
   async play({
@@ -269,11 +222,8 @@ export const LazyVerticalScrollable: Story = {
 
       await waitFor(async () => {
         await expect(args.onBottomEdgeReached).toHaveBeenCalled();
+        await expect(canvas.queryByText('loading...')).toBeInTheDocument();
       });
-
-      await expect(
-        canvas.queryByText('loading...')
-      ).toBeInTheDocument();
 
       // waiting for the next items to load
       await waitFor(async () => {

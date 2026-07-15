@@ -22,7 +22,7 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/scrollable.tsx'),
+      entry: resolve(__dirname, 'src/index.ts'),
       name: 'react-scrollable',
     },
     copyPublicDir: false,
@@ -45,7 +45,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      '@shinvik/react-scrollable': resolve(__dirname, './src/scrollable.tsx'),
+      '@shinvik/react-scrollable': resolve(__dirname, './src/index.ts'),
     },
   },
 });

@@ -1,0 +1,16 @@
+.lazy-scrollbar {
+  &-items {
+    display: flex;
+
+    &_horizontal {
+      flex-direction: row;
+    }
+
+    &_vertical {
+      flex-direction: column;
+    }
+  }
+
+  &-placeholder {
+  }
+}
